@@ -1,7 +1,10 @@
-import cipher_cli from './src/pipeStreams.js';
+import { argv } from 'process';
+import cipherCli from './src/pipeStreams.js';
+
 try {
-  cipher_cli();
+  const cliArgs = argv.slice(2);
+  cipherCli(cliArgs);
 } catch (error) {
-  console.error(error.message);
+  process.stderr.write(error.message);
   process.exit(1);
 }

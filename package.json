@@ -4,7 +4,8 @@
   "description": "Cipher CLI",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest"
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "test-coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest --coverage"
   },
   "type": "module",
   "repository": {

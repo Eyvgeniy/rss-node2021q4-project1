@@ -1,28 +1,10 @@
-import fs from 'fs';
-import { argv } from 'process';
 import pipeline from './streams/pipeline.js';
-import validateFiles from './validateFiles.js';
-import parseArgs from './parseParams.js';
+import createStreams from './createStreams.js';
+import parseArguments from './parseParams.js';
 
-export default () => {
-  const [, , ...cliArgs] = argv;
-  const { input, output, config } = parseArgs(cliArgs);
-
-  let inputStream;
-  let outputStream;
-  if (input === undefined) {
-    inputStream = process.stdin;
-  } else {
-    validateFiles(input, 'input');
-    inputStream = fs.createReadStream(input);
-  }
-
-  if (output === undefined) {
-    outputStream = process.stdout;
-  } else {
-    validateFiles(output, 'output');
-    outputStream = fs.createWriteStream(output, { flags: 'a' });
-  }
+export default (params) => {
+  const { input, output, config } = parseArguments(params);
+  const { inputStream, outputStream } = createStreams(input, output);
 
   pipeline(inputStream, outputStream, config).catch(process.stderr.write);
 };

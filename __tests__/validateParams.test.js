@@ -1,34 +1,33 @@
-import { parseArgs, parseConfig, cipherStr } from '../src/validateParams';
-import atbash from '../src/ciphers/atbash';
+import { parseArgs } from '../src/parseParams';
 
-test('validate caesar cipher params', () => {
-  const result = parseArgs(['-o', './output.txt', '--input', './input.txt', '-c', 'C1-C1-R0-A']);
-  expect(result.output).toBe('./output.txt');
-  expect(result.input).toBe('./input.txt');
-  console.log(parseConfig(result.config));
+describe('test cli parsing arguments', () => {
+  test('parse full params', () => {
+    const result = parseArgs([
+      '--output',
+      './output.txt',
+      '--input',
+      './input.txt',
+      '--config',
+      'C1-C1-R0-A',
+    ]);
 
-  const result1 = () =>
-    parseArgs(['-o', './output.txt', '--input', './input.txt', '--output', './config']);
-  expect(() => result1()).toThrow();
-});
+    expect(result.output).toBe('./output.txt');
+    expect(result.input).toBe('./input.txt');
+    expect(result.config).toBe('C1-C1-R0-A');
+  });
 
-test('atbash', () => {
-  const result = atbash('AAZZaazzMMNNmmnn');
-  expect(result).toBe('ZZAAzzaaNNMMnnmm');
-});
+  test('parse сut params', () => {
+    const result = parseArgs(['-o', './output.txt', '-i', './input.txt', '-c', 'C1-C1-R0-A']);
 
-test('cipher - 1', () => {
-  const str = 'This is secret. Message about "_" symbol!';
-  const args = ['-c', 'C1-C1-R0-A'];
-  const result = cipherStr(str, args);
-  const expected = 'Myxn xn nbdobm. Tbnnfzb ferlm "_" nhteru!';
-  expect(result).toBe(expected);
-});
+    expect(result.output).toBe('./output.txt');
+    expect(result.input).toBe('./input.txt');
+    expect(result.config).toBe('C1-C1-R0-A');
+  });
 
-test('cipher - 2', () => {
-  const str = 'This is secret. Message about "_" symbol!';
-  const args = ['-c', 'C1-R1-C0-C0-A-R0-R1-R1-A-C1'];
-  const result = cipherStr(str, args);
-  const expected = 'Myxn xn nbdobm. Tbnnfzb ferlm "_" nhteru!';
-  expect(result).toBe(str);
+  test('double param error', () => {
+    const result1 = () =>
+      parseArgs(['-o', './output.txt', '--input', './input.txt', '--output', './config']);
+
+    expect(() => result1()).toThrow('You provided output argument more than once');
+  });
 });

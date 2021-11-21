@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { Transform } from 'stream';
 
 class TransformCipher extends Transform {
