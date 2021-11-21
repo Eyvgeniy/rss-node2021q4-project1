@@ -1,5 +1,3 @@
-import { cipherMap } from './ciphers/index.js';
-
 const getCipher = (param) => {
   switch (param) {
     case 'C1':
@@ -13,7 +11,7 @@ const getCipher = (param) => {
     case 'A':
       return 'atbash';
     default:
-      throw new Error('Wrong arguments type');
+      throw new Error(`Wrong config params, no method for argument ${param}`);
   }
 };
 
@@ -32,42 +30,37 @@ const getParam = (param) => {
     case '--output':
       return 'output';
     default:
-      throw new Error('Wrong arguments type');
+      throw new Error(`Wrong arguments type, no method for argument ${param}`);
   }
 };
 
 export const parseConfig = (params) => {
   const paramsArr = params.split('-');
   if (paramsArr.find((item) => item.length > 2)) {
-    throw new Error('Wrong arguments types');
+    throw new Error(`Wrong config params`);
   }
 
   return paramsArr.map((item) => getCipher(item));
 };
 
 export const parseArgs = (params) => {
-  return params.reduce((acc, item, idx, arr) => {
+  const parsedParams = params.reduce((acc, item, idx, arr) => {
     if (idx % 2) return acc;
 
     const param = getParam(item);
     if (acc[param]) {
-      throw new Error('Wrong arguments types');
+      throw new Error(`You provided ${param} argument more than once`);
     }
 
     acc[param] = arr[idx + 1];
     return acc;
   }, {});
-};
 
-export const cipherStr = (str, args) => {
-  const argumentsObj = parseArgs(args);
-  argumentsObj.config = parseConfig(argumentsObj.config);
+  if (parsedParams.config === undefined) {
+    throw new Error('Please use config params');
+  }
 
-  return argumentsObj.config.reduce((acc, item) => {
-    const cipherFunc = cipherMap[item];
-
-    return cipherFunc(acc);
-  }, str);
+  return parsedParams;
 };
 
 export default (args) => {

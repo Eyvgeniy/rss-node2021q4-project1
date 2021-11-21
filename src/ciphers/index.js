@@ -9,9 +9,8 @@ export const cipherMap = {
   rotDec: (str) => caesar(str, -8),
 };
 
-export default (config) => (str) => {
-  return config.reduce((acc, item) => {
+export default (config) => (str) =>
+  config.reduce((acc, item) => {
     const cipher = cipherMap[item];
     return cipher(acc);
   }, str);
-};
